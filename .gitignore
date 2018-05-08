@@ -8,9 +8,12 @@
 *.user
 *.userosscache
 *.sln.docstates
-
+*.img
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
+
+# Ignore Git here
+.git
 
 # Build results
 [Dd]ebug/
