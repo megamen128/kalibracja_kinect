@@ -1,5 +1,3 @@
-@@ -0,0 1,120 @@
-
 
 #include "OpenNI.h"
 #include <opencv\cv.h>
@@ -117,5 +115,59 @@ int main()
 
 		cv::imshow("Color", dataStream[C_COLOR_STREAM]);
 		c = cv::waitKey(10);
-	}
+		if (c == '1')
+		{
+			cv::imwrite("Images/img1.jpg", dataStream[C_COLOR_STREAM]);
+			cv::namedWindow("Img1", CV_WINDOW_AUTOSIZE);
+			cv::imshow("Img1", dataStream[C_COLOR_STREAM]);
+
+		}
+		if (c == '2')
+		{
+			cv::imwrite("Images/img2.jpg", dataStream[C_COLOR_STREAM]);
+			cv::namedWindow("Img2", CV_WINDOW_AUTOSIZE);
+			cv::imshow("Img2", dataStream[C_COLOR_STREAM]);
+		}
+		if (c == '3')
+		{
+			cv::imwrite("Images/img3.jpg", dataStream[C_COLOR_STREAM]);
+			cv::namedWindow("Img3", CV_WINDOW_AUTOSIZE);
+			cv::imshow("Img3", dataStream[C_COLOR_STREAM]);
+		}
+		if (c == '4')
+		{
+			cv::imwrite("Images/img4.jpg", dataStream[C_COLOR_STREAM]);
+			cv::namedWindow("Img4", CV_WINDOW_AUTOSIZE);
+			cv::imshow("Img4", dataStream[C_COLOR_STREAM]);
+		}
+		if (c == '5')
+		{
+			cv::imwrite("Images/img5.jpg", dataStream[C_COLOR_STREAM]);
+			cv::namedWindow("Img5", CV_WINDOW_AUTOSIZE);
+			cv::imshow("Img5", dataStream[C_COLOR_STREAM]);
+		}
+		if (c == '6')
+		{
+			cv::imwrite("Images/img6.jpg", dataStream[C_COLOR_STREAM]);
+			cv::namedWindow("Img6", CV_WINDOW_AUTOSIZE);
+			cv::imshow("Img6", dataStream[C_COLOR_STREAM]);
+		}
+		if (c == '7')
+		{
+			cv::imwrite("Images/img7.jpg", dataStream[C_COLOR_STREAM]);
+			cv::namedWindow("Img7", CV_WINDOW_AUTOSIZE);
+			cv::imshow("Img7", dataStream[C_COLOR_STREAM]);
+		}
+		if (c == '8')
+		{
+			cv::imwrite("Images/img8.jpg", dataStream[C_COLOR_STREAM]);
+			cv::namedWindow("Img8", CV_WINDOW_AUTOSIZE);
+			cv::imshow("Img8", dataStream[C_COLOR_STREAM]);
+		}
+	}	
+		m_colorFrame.release();
+		m_depth.stop();
+		m_color.stop();
+		openni::OpenNI::shutdown();
+		m_device.close();
 }
