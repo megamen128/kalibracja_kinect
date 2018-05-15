@@ -26,8 +26,8 @@ int main()
 	while (mode == 0) {
 		int wybor=0;
 		std::cout << "Wpisz odpowiedni numer" << std::endl;
-		std::cout << "1 - Podglï¿½d z kolorowej kamery kinecta" << std::endl;
-		std::cout << "2 - Kalibracja zapisanych zdjï¿½ï¿½" << std::endl;
+		std::cout << "1 - Podgl¹d z kolorowej kamery kinecta" << std::endl;
+		std::cout << "2 - Kalibracja zapisanych zdjêæ" << std::endl;
 		std::cin >> wybor;
 		switch (wybor) {
 		case 1: mode = 1; break;
@@ -195,6 +195,7 @@ int main()
 		int numBoards = 8;
 		int punktyPionowo = 6;
 		int punktyPoziomo = 8;
+		int iloscKwadratow = punktyPionowo * punktyPoziomo;
 		Size wielkosc_tablicy = Size(punktyPionowo, punktyPoziomo);
 		vector<vector<Point3f>> Punkty_obiektu;
 		vector<vector<Point2f>> Punkty_obrazu;
