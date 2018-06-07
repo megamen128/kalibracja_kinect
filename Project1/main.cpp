@@ -181,8 +181,8 @@ int main()
 			{
 				cv::namedWindow("Img_Kinect", CV_WINDOW_AUTOSIZE);
 				cv::namedWindow("Img_Kamera", CV_WINDOW_AUTOSIZE);
-				cv::imwrite("Images/Kinect/img1.jpg", dataStream[C_COLOR_STREAM]);
-				cv::imwrite("Images/Kamera/img1.jpg", frame);
+				cv::imwrite("Zdjecia/Kinect/img1.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Zdjecia/Kamera/img1.jpg", frame);
 				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
 				cv::imshow("Img_Kamera", frame);
 
@@ -190,50 +190,50 @@ int main()
 			}
 			if (c == '2')
 			{
-				cv::imwrite("Images/Kinect/img2.jpg", dataStream[C_COLOR_STREAM]);
-				cv::imwrite("Images/Kamera/img2.jpg", frame);
+				cv::imwrite("Zdjecia/Kinect/img2.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Zdjecia/Kamera/img2.jpg", frame);
 				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
 				cv::imshow("Img_Kamera", frame);
 			}
 			if (c == '3')
 			{
-				cv::imwrite("Images/Kinect/img3.jpg", dataStream[C_COLOR_STREAM]);
-				cv::imwrite("Images/Kamera/img3.jpg", frame);
+				cv::imwrite("Zdjecia/Kinect/img3.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Zdjecia/Kamera/img3.jpg", frame);
 				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
 				cv::imshow("Img_Kamera", frame);
 			}
 			if (c == '4')
 			{
-				cv::imwrite("Images/Kinect/img4.jpg", dataStream[C_COLOR_STREAM]);
-				cv::imwrite("Images/Kamera/img4.jpg", frame);
+				cv::imwrite("Zdjecia/Kinect/img4.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Zdjecia/Kamera/img4.jpg", frame);
 				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
 				cv::imshow("Img_Kamera", frame);
 			}
 			if (c == '5')
 			{
-				cv::imwrite("Images/Kinect/img5.jpg", dataStream[C_COLOR_STREAM]);
-				cv::imwrite("Images/Kamera/img5.jpg", frame);
+				cv::imwrite("Zdjecia/Kinect/img5.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Zdjecia/Kamera/img5.jpg", frame);
 				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
 				cv::imshow("Img_Kamera", frame);
 			}
 			if (c == '6')
 			{
-				cv::imwrite("Images/Kinect/img6.jpg", dataStream[C_COLOR_STREAM]);
-				cv::imwrite("Images/Kamera/img6.jpg", frame);
+				cv::imwrite("Zdjecia/Kinect/img6.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Zdjecia/Kamera/img6.jpg", frame);
 				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
 				cv::imshow("Img_Kamera", frame);
 			}
 			if (c == '7')
 			{
-				cv::imwrite("Images/Kinect/img7.jpg", dataStream[C_COLOR_STREAM]);
-				cv::imwrite("Images/Kamera/img7.jpg", frame);
+				cv::imwrite("Zdjecia/Kinect/img7.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Zdjecia/Kamera/img7.jpg", frame);
 				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
 				cv::imshow("Img_Kamera", frame);
 			}
 			if (c == '8')
 			{
-				cv::imwrite("Images/Kinect/img8.jpg", dataStream[C_COLOR_STREAM]);
-				cv::imwrite("Images/Kamera/img8.jpg", frame);
+				cv::imwrite("Zdjecia/Kinect/img8.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Zdjecia/Kamera/img8.jpg", frame);
 				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
 				cv::imshow("Img_Kamera", frame);
 			}
@@ -265,7 +265,7 @@ int main()
 			obj.push_back(Point3f(j / punktyPionowo, j%punktyPionowo, 0.0f));
 
 
-		string nazwa = "Images/Kinect/img";
+		string nazwa = "Zdjecia/Kinect/img";
 		char c;
 	//	cv::namedWindow("Zdjecia", CV_WINDOW_AUTOSIZE);
 		Mat image[24];	
@@ -292,7 +292,7 @@ int main()
 			}
 			cv::imshow("win1", image[i]);
 			cv::imshow("win2", gray_image);
-			string sciezka = "Zdjecia_z_punktami/img" + std::to_string(i) + ".jpg";
+			string sciezka = "Zdj_szare_z_punktami/img" + std::to_string(i) + ".jpg";
 			imwrite(sciezka, gray_image);
 			int key = waitKey(0);
 
