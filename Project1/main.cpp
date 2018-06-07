@@ -6,6 +6,7 @@
 #include <opencv2/contrib/contrib.hpp>
 #include <opencv2/core/core.hpp>
 #include <string>>
+
 using namespace cv;
 #define C_DEPTH_STREAM 0
 #define C_COLOR_STREAM 1
@@ -26,7 +27,7 @@ int main()
 	while (mode == 0) {
 		int wybor=0;
 		std::cout << "Wpisz odpowiedni numer" << std::endl;
-		std::cout << "1 - Podgl¹d z kolorowej kamery kinecta" << std::endl;
+		std::cout << "1 - Zapisz zdjêcia z kamery kinecta oraz zwyklej kamery" << std::endl;
 		std::cout << "2 - Kalibracja zapisanych zdjêæ" << std::endl;
 		std::cin >> wybor;
 		switch (wybor) {
@@ -39,22 +40,26 @@ int main()
 	{
 		cv::vector<cv::Mat> dataStream;
 		m_colorStreamStatus = true;
-		m_depthStreamStatus = false;
-		m_alignedStreamStatus = false;
+		m_depthStreamStatus = true;
 		openni::Device m_device;
 		openni::VideoStream m_depth, m_color, **m_streams;
-		openni::VideoFrameRef m_colorFrame;
-		uint64_t m_colorTimeStamp;
+		openni::VideoFrameRef m_colorFrame, m_depthFrame;
+		uint64_t m_colorTimeStamp, m_depthTimeStamp;
 		int m_currentStream;
-		cv::Mat m_colorImage;
+		cv::Mat m_colorImage, m_depthImage;
+
+		VideoCapture cap(0); // open the default camera
+		if (!cap.isOpened())  // check if we succeeded
+			return -1;
+
 
 		m_status = openni::STATUS_OK;
-		const char* deviceURI = openni::ANY_DEVICE;
+
 		m_status = openni::OpenNI::initialize();
 		std::cout << "After initialization: " << std::endl;
 		std::cout << openni::OpenNI::getExtendedError() << std::endl;
-		m_status = m_device.open(deviceURI);
 
+		m_status = m_device.open(openni::ANY_DEVICE);
 		if (m_status != openni::STATUS_OK)
 		{
 			std::cout << "OpenCVKinect: Device open failseed: " << std::endl;
@@ -81,6 +86,26 @@ int main()
 			std::cout << openni::OpenNI::getExtendedError() << std::endl;
 			return false;
 		}
+
+		m_status = m_depth.create(m_device, openni::SENSOR_DEPTH);
+		if (m_status == openni::STATUS_OK)
+		{
+			m_status = m_depth.start();
+			if (m_status != openni::STATUS_OK)
+			{
+				std::cout << "OpenCVKinect: Couldn't start depth stream: " << std::endl;
+				std::cout << openni::OpenNI::getExtendedError() << std::endl;
+				m_depth.destroy();
+				return false;
+			}
+		}
+		else
+		{
+			std::cout << "OpenCVKinect: Couldn't find depth stream: " << std::endl;
+			std::cout << openni::OpenNI::getExtendedError() << std::endl;
+			return false;
+		}
+		
 		m_streams = new openni::VideoStream*[C_NUM_STREAMS];
 		m_streams[C_COLOR_STREAM] = &m_color;
 		m_streams[C_DEPTH_STREAM] = &m_depth;
@@ -90,10 +115,16 @@ int main()
 			cv::Mat bufferImage;
 			cv::vector<cv::Mat> Vec;
 
+			Mat frame;
+			cap >> frame; // get a new frame from camera
+			cv::imshow("Color2", frame);
+
+			
 			bool colorCaptured = false;
-			if (m_colorStreamStatus)
+			bool depthCaptured = false;
+			if (m_colorStreamStatus & m_depthStreamStatus)
 			{
-				while (!colorCaptured)
+				while (!colorCaptured || ! depthCaptured || m_depthTimeStamp != m_colorTimeStamp)
 				{
 					m_status = openni::OpenNI::waitForAnyStream(m_streams, C_NUM_STREAMS, &m_currentStream, C_STREAM_TIMEOUT);
 					if (m_status != openni::STATUS_OK)
@@ -113,77 +144,102 @@ int main()
 						colorCaptured = true;
 						cv::cvtColor(bufferImage, m_colorImage, CV_BGR2RGB);
 						break;
+					case C_DEPTH_STREAM:
+						m_depth.readFrame(&m_depthFrame);
+						m_depthImage.create(m_depthFrame.getHeight(), m_depthFrame.getWidth(), CV_16UC1);
+						m_depthImage.data = (uchar*)m_depthFrame.getData();
+						m_depthTimeStamp = m_depthFrame.getTimestamp() >> 16;
+						std::cout << "Depth Timestamp: " << m_depthTimeStamp << std::endl;
+						depthCaptured = true;
 					default:
 						break;
 					}
 				}
-				Vec.push_back(m_colorImage);
+			/*	Vec.push_back(m_colorImage);
+				Vec.push_back(m_depthImage);
 				bufferImage.release();
 				dataStream = Vec;
-				std::cout << Vec.size() << std::endl;
+				std::cout << Vec.size() << std::endl;*/
 
 			}
 			else
 			{
 				m_colorImage = cv::Mat::zeros(10, 10, CV_8UC1);
+				m_depthImage = cv::Mat::zeros(10, 10, CV_8UC1);
+			
 			}
+			dataStream.push_back(m_depthImage);
 			dataStream.push_back(m_colorImage);
+
 			bufferImage.release();
 			std::cout << dataStream.size() << std::endl;
-
 			cv::imshow("Color", dataStream[C_COLOR_STREAM]);
+			cv::imshow("Depth", dataStream[C_DEPTH_STREAM]); 
+
 			c = cv::waitKey(10);
 			if (c == '1')
 			{
-				cv::imwrite("Images/img1.jpg", dataStream[C_COLOR_STREAM]);
-				cv::namedWindow("Img1", CV_WINDOW_AUTOSIZE);
-				cv::imshow("Img1", dataStream[C_COLOR_STREAM]);
+				cv::namedWindow("Img_Kinect", CV_WINDOW_AUTOSIZE);
+				cv::namedWindow("Img_Kamera", CV_WINDOW_AUTOSIZE);
+				cv::imwrite("Images/Kinect/img1.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kamera/img1.jpg", frame);
+				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
+				cv::imshow("Img_Kamera", frame);
+
 
 			}
 			if (c == '2')
 			{
-				cv::imwrite("Images/img2.jpg", dataStream[C_COLOR_STREAM]);
-				cv::namedWindow("Img2", CV_WINDOW_AUTOSIZE);
-				cv::imshow("Img2", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kinect/img2.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kamera/img2.jpg", frame);
+				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
+				cv::imshow("Img_Kamera", frame);
 			}
 			if (c == '3')
 			{
-				cv::imwrite("Images/img3.jpg", dataStream[C_COLOR_STREAM]);
-				cv::namedWindow("Img3", CV_WINDOW_AUTOSIZE);
-				cv::imshow("Img3", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kinect/img3.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kamera/img3.jpg", frame);
+				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
+				cv::imshow("Img_Kamera", frame);
 			}
 			if (c == '4')
 			{
-				cv::imwrite("Images/img4.jpg", dataStream[C_COLOR_STREAM]);
-				cv::namedWindow("Img4", CV_WINDOW_AUTOSIZE);
-				cv::imshow("Img4", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kinect/img4.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kamera/img4.jpg", frame);
+				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
+				cv::imshow("Img_Kamera", frame);
 			}
 			if (c == '5')
 			{
-				cv::imwrite("Images/img5.jpg", dataStream[C_COLOR_STREAM]);
-				cv::namedWindow("Img5", CV_WINDOW_AUTOSIZE);
-				cv::imshow("Img5", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kinect/img5.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kamera/img5.jpg", frame);
+				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
+				cv::imshow("Img_Kamera", frame);
 			}
 			if (c == '6')
 			{
-				cv::imwrite("Images/img6.jpg", dataStream[C_COLOR_STREAM]);
-				cv::namedWindow("Img6", CV_WINDOW_AUTOSIZE);
-				cv::imshow("Img6", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kinect/img6.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kamera/img6.jpg", frame);
+				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
+				cv::imshow("Img_Kamera", frame);
 			}
 			if (c == '7')
 			{
-				cv::imwrite("Images/img7.jpg", dataStream[C_COLOR_STREAM]);
-				cv::namedWindow("Img7", CV_WINDOW_AUTOSIZE);
-				cv::imshow("Img7", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kinect/img7.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kamera/img7.jpg", frame);
+				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
+				cv::imshow("Img_Kamera", frame);
 			}
 			if (c == '8')
 			{
-				cv::imwrite("Images/img8.jpg", dataStream[C_COLOR_STREAM]);
-				cv::namedWindow("Img8", CV_WINDOW_AUTOSIZE);
-				cv::imshow("Img8", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kinect/img8.jpg", dataStream[C_COLOR_STREAM]);
+				cv::imwrite("Images/Kamera/img8.jpg", frame);
+				cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
+				cv::imshow("Img_Kamera", frame);
 			}
 		}
 		m_colorFrame.release();
+		m_depthFrame.release();
 		m_depth.stop();
 		m_color.stop();
 		openni::OpenNI::shutdown();
@@ -192,6 +248,8 @@ int main()
 	}
 	if (mode == 2)
 	{
+		Mat K, D;
+		vector < Mat > rvecs, tvecs;
 		int numBoards = 8;
 		int punktyPionowo = 6;
 		int punktyPoziomo = 8;
@@ -207,43 +265,42 @@ int main()
 			obj.push_back(Point3f(j / punktyPionowo, j%punktyPionowo, 0.0f));
 
 
-		string nazwa = "Images/img";
+		string nazwa = "Images/Kinect/img";
 		char c;
 	//	cv::namedWindow("Zdjecia", CV_WINDOW_AUTOSIZE);
-		Mat image[8];	
-		for (int i = 1; i <=8; i++)
+		Mat image[24];	
+		for (int i = 1; i <=24; i++)
 		{
 			string s = nazwa + std::to_string(i) + ".jpg";
 			image[i-1] = imread(s);
 		
 			
 		}
-		imshow("win1", image[0]);
-		waitKey();
-		int teraz = 0;
-		while (successes < 8)
+		cv::imshow("win1", image[0]); 
+		cv::waitKey(); 
+
+		for (int i =0; i<=24; i++ )
 		{
 			Mat gray_image;
-			cvtColor(image[teraz], gray_image, CV_BGR2GRAY);
-			bool found = findChessboardCorners(image[teraz], wielkosc_tablicy, katy, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
+			cvtColor(image[i], gray_image, CV_BGR2GRAY);
+			bool found = findChessboardCorners(image[i], wielkosc_tablicy, katy, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
 
 			if (found)
 			{
 				cornerSubPix(gray_image, katy, Size(11, 11), Size(-1, -1), TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
 				drawChessboardCorners(gray_image, wielkosc_tablicy, katy, found);
 			}
-			imshow("win1", image[teraz]);
-			imshow("win2", gray_image);
-			string sciezka = "Zdjecia_z_punktami/img" + std::to_string(teraz) + ".jpg";
+			cv::imshow("win1", image[i]);
+			cv::imshow("win2", gray_image);
+			string sciezka = "Zdjecia_z_punktami/img" + std::to_string(i) + ".jpg";
 			imwrite(sciezka, gray_image);
-			teraz++;
 			int key = waitKey(0);
 
 			if (key == 27)
 
 				return 0;
 
-			if (key == 97 && found != 0)
+			if ( found != 0)
 			{
 				Punkty_obrazu.push_back(katy);
 				Punkty_obiektu.push_back(obj);
@@ -252,13 +309,23 @@ int main()
 
 				successes++;
 
-				if (successes >= 8)
+				if (successes >= 24)
 					break;
 			}
-
+			
 		}
-		waitKey();
+		
 		mode = 0;
-		destroyAllWindows();
+		cv::destroyAllWindows();
+		cv::calibrateCamera(Punkty_obiektu, Punkty_obrazu, image[1].size(), K, D, rvecs, tvecs, 0);
+		FileStorage fs("kalibracja_kinect", FileStorage::WRITE);
+		fs << "K" << K;
+		fs << "D" << D;
+		fs << "punktyPionowo" << punktyPionowo;
+		fs << "punktyPoziomo" << punktyPoziomo;
+		printf("Kalibracja Skoñczona");
+		
+		cv::waitKey();
+		return 0;
 	}
 }
