@@ -119,13 +119,6 @@ int main()
 		m_streams[C_COLOR_STREAM] = &m_color;
 		m_streams[C_DEPTH_STREAM] = &m_depth;
 
-		INuiCoordinateMapper * pMapper;
-		//INuiSensor
-		//NuiGetCoordinateMapper(&pMapper);
-
-
-
-
 
 		char c = ' ';
 		while (c != 27) {
@@ -134,7 +127,10 @@ int main()
 
 			Mat frame;
 			cap >> frame; // get a new frame from camera
+			cv::flip(frame, frame, 1);
+
 			cv::imshow("Color2", frame);
+			const openni::DepthPixel* pDepthRow;
 
 			bool colorCaptured = false;
 			bool depthCaptured = false;
@@ -165,6 +161,9 @@ int main()
 						m_depthImage.data = (uchar*)m_depthFrame.getData();
 						m_depthTimeStamp = m_depthFrame.getTimestamp() >> 16;
 						depthCaptured = true;
+						 pDepthRow = (const openni::DepthPixel*)m_depthFrame.getData();
+
+						break;
 					default:
 						break;
 					}
@@ -181,8 +180,10 @@ int main()
 			dataStream.push_back(m_depthImage);
 			dataStream.push_back(m_colorImage);
 
+	
+
 			bufferImage.release();
-			//std::cout << dataStream.size() << std::endl;
+	
 			cv::imshow("Color", dataStream[C_COLOR_STREAM]);
 			cv::imshow("Depth", dataStream[C_DEPTH_STREAM]);
 			int x, y;
@@ -205,6 +206,7 @@ int main()
 
 
 					cv::imshow("Img_Kinect", dataStream[C_COLOR_STREAM]);
+					Mat frame2;
 					cv::imshow("Img_Kamera", frame);
 					cv::imshow("Img_Depth", dataStream[C_DEPTH_STREAM]);
 
@@ -212,6 +214,7 @@ int main()
 					cv::imwrite(temp_dep, dataStream[C_DEPTH_STREAM]);
 					cv::imwrite(temp_kol, frame);
 
+				//	openni::CoordinateConverter::convertDepthToColor(m_depth,m_color,dataStream[0].)
 			
 
 					i++;
@@ -255,7 +258,6 @@ int main()
 		string nazwa2 = "Zdjecia/Depth/img";
 		string nazwa3 = "Zdjecia/Kamera/img";
 		char c;
-	//	cv::namedWindow("Zdjecia", CV_WINDOW_AUTOSIZE);
 		Mat image[30], image_depth[30], image_kamera[30];
 		for (int i = 1; i <=30; i++)
 		{
@@ -335,65 +337,65 @@ int main()
 				Punkty_obrazu_kamera.push_back(katy_kamera);
 
 			}
-			if (successes >= 30 || i == 29)
+			if (successes >= 20 || i == 19)
 				break;
 		}
 		
+		double rms;
 		mode = 0;
 		cv::destroyAllWindows();
-		cv::calibrateCamera(Punkty_obiektu, Punkty_obrazu, image[1].size(), K, D, rvecs, tvecs, 0); //kalibracja kamery kolorowej kinecta
+		rms = cv::calibrateCamera(Punkty_obiektu, Punkty_obrazu, image[1].size(), K, D, rvecs, tvecs); //kalibracja kamery kolorowej kinecta
 		Mat dst;
-		/*for (int i = 0; i < 29; i++)
+		for (int i = 0; i < 19; i++)
 		{
 			cv::undistort(image[i], dst, K, D);
 			imshow("img_original", image[i]);
 			imshow("img_undistorted", dst);
 			if(cv::waitKey() == 115) continue;
-		}*/
+		}
+		
+		cout << "done with RMS error=" << rms << endl;
 
-		cv::calibrateCamera(Punkty_obiektu, Punkty_obrazu_kamera, image[1].size(), K3, D3, rvecs2, tvecs2, 0);  //kalibracja oddzielnej kamery
-		/*for (int i = 0; i < 29; i++)
+		rms = cv::calibrateCamera(Punkty_obiektu, Punkty_obrazu_kamera, image[1].size(), K3, D3, rvecs2, tvecs2);  //kalibracja oddzielnej kamery
+		for (int i = 0; i < 19; i++)
 		{
 			cv::undistort(image_kamera[i], dst, K3, D3);
 			imshow("img_original2", image_kamera[i]);
 			imshow("img_undistorted2", dst);
 			if (cv::waitKey() == 115) continue;
-		}*/
-
-
-		Mat K1, D1, K2, D2, R, T, E, F;
-	/*	cv::stereoCalibrate(Punkty_obiektu, Punkty_obrazu, Punkty_obrazu_kamera, K1, D1, K2, D2, image[1].size(), R, T, E, F,
+		}
+		cout << "done with RMS error=" << rms << endl;
+		Mat H1, H2;
+		Mat K1, D1, K2, D2, R, T, E,F;
+		rms = cv::stereoCalibrate(Punkty_obiektu, Punkty_obrazu, Punkty_obrazu_kamera, K1, D1, K2, D2, image_kamera[1].size(), R, T, E, F,
 			TermCriteria(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS, 100, 1e-5),
-			CV_CALIB_FIX_ASPECT_RATIO +
-			CV_CALIB_ZERO_TANGENT_DIST +
-			CV_CALIB_SAME_FOCAL_LENGTH +
-			CV_CALIB_RATIONAL_MODEL +
-			CV_CALIB_FIX_K3 + CV_CALIB_FIX_K4 + CV_CALIB_FIX_K5);*/
+			CV_CALIB_USE_INTRINSIC_GUESS +
+			CV_CALIB_FIX_ASPECT_RATIO + CV_CALIB_FIX_INTRINSIC);
+
+
+		cout << "done with RMS error=" << rms << endl;
+		cout << image_kamera[1].size()<< image[1].size() << endl;
+
+
 		FileStorage fs("kalibracja_kinect", FileStorage::WRITE);
 		fs << "K" << K;
 		fs << "D" << D;
-		fs << "punktyPionowo" << punktyPionowo;
-		fs << "punktyPoziomo" << punktyPoziomo;
 		fs.release();
 
 		FileStorage fs2("kalibracja_kamera", FileStorage::WRITE);
 		fs2 << "K" << K3;
 		fs2 << "D" << D3;
-		fs2 << "punktyPionowo" << punktyPionowo;
-		fs2 << "punktyPoziomo" << punktyPoziomo;
+
 		fs2.release();
 
-	/*	FileStorage fs2("kalibracja_stereo", FileStorage::WRITE);
-		fs2 << "K1" << K1;
-		fs2 << "K2" << K2;
-		fs2 << "D1" << D1;
-		fs2 << "D2" << D2;
-		fs2 << "R" << R;
-		fs2 << "T" << T;
-		fs2 << "E" << E;
-		fs2 << "F" << F;
-		
-		fs2.release();*/
+		FileStorage fs3("kalibracja_stereo", FileStorage::WRITE);
+		fs3 << "R" << R;
+		fs3 << "T" << T;
+
+		//fs3 << "P1" << P1;
+		//fs3 << "P2" << P2;
+	
+		fs3.release();
 		cout << ("Kalibracja Skonczona");
 		
 		cv::waitKey();
@@ -407,6 +409,7 @@ int main()
 		string nazwa2 = "Zdjecia/Kinect/img";
 		string nazwa3 = "Zdjecia/Kamera/img";
 		string nazwa4 = "Zdjecia/Rektyf/img";
+
 
 		Mat K_Kinec, D_Kinec, K_Kamer, D_Kamer, R, T, R1, R2, P1, P2, Q;
 		Mat map1, map2;
@@ -447,23 +450,28 @@ int main()
 		fs["T"] >> T;
 		fs.release();
 
+		Rect validRoi[2];
 		Mat dst;
-		cv::stereoRectify(K_Kamer, D_Kamer, K_Kinec, D_Kinec, image_kinect->size(), R, T, R1, R2, P1, P2, Q);
-		cv::initUndistortRectifyMap(K_Kamer,D_Kamer,R1,K_Kinec,image_kamera[1].size(), CV_32FC1,map1,map2);
+		cv::stereoRectify(K_Kamer, D_Kamer, K_Kinec, D_Kinec, image_kamera[1].size(), R, T, R1, R2, P1, P2, Q,
+		0, 1, image_kamera[1].size(), &validRoi[0], &validRoi[1]);
+
+
+		cv::initUndistortRectifyMap(K_Kamer,D_Kamer,R, K_Kinec,image_kamera[1].size(), CV_32FC1,map1,map2);
 	
-		for (int i = 0; i < 29; i++)
+		for (int i = 0; i < 19; i++)
 		{
-			cv::remap(image_kamera[i], dst, map1, map2, INTER_NEAREST,  BORDER_TRANSPARENT, 0);
+			cv::remap(image_kamera[i], dst, map1, map2, INTER_LINEAR, BORDER_CONSTANT, Scalar());
 			cv::imshow("kamera_undist", dst);
 			cv::imshow("kamera original", image_kamera[i]);
 			cv::imshow("kinect original", image_kinect[i]);
+			cv::imshow("kinect depth", image_depth[i]);
+
 	
 
 			string s_rektyf = nazwa4 + std::to_string(i) + ".jpg";
 			cv::imwrite(s_rektyf, dst );
 
 			int key = cv::waitKey();
-			//TODO ZAPISAæ JAKOS TE ZDJECIA ZEBY POTEM POKAZAC BRYMUTOWI I SIE SPYTAC CZY PANDA 3
 		}
 		int key = cv::waitKey();
 		mode = 0;
