@@ -6,13 +6,61 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\cv.h">
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\PSLink.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\PS1080.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\PrimeSense.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\OpenNI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\OniVersion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\OniProperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\OniPlatform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\OniEnums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\OniCTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\OniCProperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\OniCEnums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\OniCAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\NuiSkeleton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\NuiSensor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\NuiImageCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\NuiApi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\highgui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\OpenNI.h">
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\cv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Project\include\Win32\OniPlatformWin32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

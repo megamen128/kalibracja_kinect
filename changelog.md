@@ -1,8 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.4] - 06-19
+### Added
+- Dodano folder BUILD storzony za pomocą programu CMake. Umożliwia on modyfikacje kodu i budowe programu na nowo z wbudowanymi już bibliotekami
 
-## [0.0.4] - 06-09
+## [0.0.4] - 06-09 
 ### Added
 - Kalibracja kamery PS Eye oraz zapisanie ich wyników w pliku "kalibracja_kamera"
 - Przeprowadzenie kalibracji stereo w celu znalezienia zależności między kamerą kinecta a kamerą PS Eye. Zapisanie jej wyników w pliku "kalibracja_stereo"

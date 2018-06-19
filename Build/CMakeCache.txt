@@ -97,7 +97,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELEASE:STRING=/INCREMENTAL:NO
 CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO:STRING=/debug /INCREMENTAL
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=kalibracja_kinect
+CMAKE_PROJECT_NAME:STATIC=kalib
 
 //RC compiler
 CMAKE_RC_COMPILER:FILEPATH=rc
@@ -217,6 +217,12 @@ OpenNI_DIR:PATH=C:/Program Files (x86)/OpenNI2
 
 //pkg-config executable
 PKG_CONFIG_EXECUTABLE:FILEPATH=PKG_CONFIG_EXECUTABLE-NOTFOUND
+
+//Value Computed by CMake
+kalib_BINARY_DIR:STATIC=C:/Users/Marcel/Documents/GitHub/kalibracja_kinect/Build
+
+//Value Computed by CMake
+kalib_SOURCE_DIR:STATIC=C:/Users/Marcel/Documents/GitHub/kalibracja_kinect/Project
 
 //Value Computed by CMake
 kalibracja_kinect_BINARY_DIR:STATIC=C:/Users/Marcel/Documents/GitHub/kalibracja_kinect/Build
