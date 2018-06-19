@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Marcel\Documents\GitHub\kalibracja_kinect\Build\CMakeFiles\f181c9d4a4c715fbe583863c4c2695c9\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{693026A5-6B4A-370D-B55E-80ECC99FAAA4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

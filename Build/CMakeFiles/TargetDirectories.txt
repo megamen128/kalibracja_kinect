@@ -1,0 +1,3 @@
+C:/Users/Marcel/Documents/GitHub/kalibracja_kinect/Build/CMakeFiles/kalib.dir
+C:/Users/Marcel/Documents/GitHub/kalibracja_kinect/Build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Marcel/Documents/GitHub/kalibracja_kinect/Build/CMakeFiles/ZERO_CHECK.dir
